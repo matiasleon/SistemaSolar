@@ -1,0 +1,11 @@
+C:\Users\matil\source\repos\WeatherPredictionMachine\bin\Debug\netcoreapp2.1\WeatherPredictionMachine.deps.json
+C:\Users\matil\source\repos\WeatherPredictionMachine\bin\Debug\netcoreapp2.1\WeatherPredictionMachine.runtimeconfig.json
+C:\Users\matil\source\repos\WeatherPredictionMachine\bin\Debug\netcoreapp2.1\WeatherPredictionMachine.runtimeconfig.dev.json
+C:\Users\matil\source\repos\WeatherPredictionMachine\bin\Debug\netcoreapp2.1\WeatherPredictionMachine.dll
+C:\Users\matil\source\repos\WeatherPredictionMachine\bin\Debug\netcoreapp2.1\WeatherPredictionMachine.pdb
+C:\Users\matil\source\repos\WeatherPredictionMachine\obj\Debug\netcoreapp2.1\WeatherPredictionMachine.csprojAssemblyReference.cache
+C:\Users\matil\source\repos\WeatherPredictionMachine\obj\Debug\netcoreapp2.1\WeatherPredictionMachine.csproj.CoreCompileInputs.cache
+C:\Users\matil\source\repos\WeatherPredictionMachine\obj\Debug\netcoreapp2.1\WeatherPredictionMachine.AssemblyInfoInputs.cache
+C:\Users\matil\source\repos\WeatherPredictionMachine\obj\Debug\netcoreapp2.1\WeatherPredictionMachine.AssemblyInfo.cs
+C:\Users\matil\source\repos\WeatherPredictionMachine\obj\Debug\netcoreapp2.1\WeatherPredictionMachine.dll
+C:\Users\matil\source\repos\WeatherPredictionMachine\obj\Debug\netcoreapp2.1\WeatherPredictionMachine.pdb
