@@ -5,9 +5,9 @@ using WeatherPredictionMachine.Entitites;
 
 namespace WeatherPredictionMachine
 {
-    public class Machine
+    public class WeatherMachine
     {
-        public IEnumerable<WeatherByDay> PredictFirstYear()
+        public IEnumerable<WeatherByDay> Predict()
         {
             var weathersByDay = new List<WeatherByDay>();
             for (int day = 1; day <= 3600; day++)
@@ -24,23 +24,23 @@ namespace WeatherPredictionMachine
         {
             var betasoidePosition = CalculteCoordinates(2000, -3, t);
             var ferengiePosition = CalculteCoordinates(500, -1, t);
-            var vulcanoPosition = CalculteCoordinates(1000, 5,t);
+            var vulcanoPosition = CalculteCoordinates(1000, 5, t);
             var weather = DeterminateWheater(betasoidePosition, ferengiePosition, vulcanoPosition);
-            Console.WriteLine(weather);
+
             return weather;
         }
 
         private string DeterminateWheater(Point p1, Point p2, Point p3)
         {
-            double b = 0;
+            int b = 0;
             var m1 = (p2.Y - p1.Y) / (p2.X - p1.X);
             var m2 = (p3.Y - p1.Y) / (p3.X - p1.X);
 
-            if(m1 == m2)
+            if (m1 == m2)
             {
                 b = p1.Y - m1 * p1.X;
                 // para por el centro
-                if(b == 0)
+                if (b == 0)
                 {
                     // Sequia
                     return "Sequia";
@@ -51,15 +51,44 @@ namespace WeatherPredictionMachine
                     return "Condiciones ideales";
                 }
             }
-            else
+
+            //triangulo
+            // Si el area del triangulo con los 3 puntos es mayor
+            // al area del poligono de 4 vertices contando el centro,
+            // el centro esta dentro del triangulo
+            var originPoint = new Point { X = 0, Y = 0 };
+            
+            if (PoligonArea(new Point[] { p1, p2, p3 }) > PoligonArea(new Point[] { p1, p2, p3, originPoint }))
             {
-                //triangulo
-                // Si el area del triangulo con los 3 puntos es mayor
-                // al area del poligono de 4 vertices contando el centro, 
-                // el centro esta dentro del triangulo
+                // determinar el dia maximo de lluvia calculando el perimetro.
+                // guardar el dia
                 return "Lluvia";
-                // encontrar el maximo dia 
             }
+
+            return "Incorrecto";
+            // encontrar el maximo dia 
+
+        }
+
+        private float PoligonArea(params Point[] points)
+        {
+            // Add the first point to the end.
+            var lengthPoints = points.Length;
+            Point[] pts = new Point[lengthPoints + 1];
+            points.CopyTo(pts, 0);
+            pts[lengthPoints] = points[0];
+
+            // Get the areas.
+            float area = 0;
+            for (int i = 0; i < lengthPoints; i++)
+            {
+                area +=
+                    (pts[i + 1].X - pts[i].X) *
+                    (pts[i + 1].Y + pts[i].Y) / 2;
+            }
+
+            // Return the result.
+            return Math.Abs(area);
         }
 
         private Point CalculteCoordinates(int distance, double angularVelocity, double t)
