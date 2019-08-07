@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using WeatherPredictionMachine.Entitites;
 
-namespace WeatherPredictionMachine
+namespace WeatherPredictionMachine.Business
 {
     public class WeatherMachine
     {
         public IEnumerable<WeatherByDay> Predict()
         {
             var weathersByDay = new List<WeatherByDay>();
-            for (int day = 1; day <= 3600; day++)
+            for (int day = 1; day <= 360; day++)
             {
-                var weather = PredictWeather(day);
+                var weather = PredictWeatherBy(day);
                 var weatherByDay = new WeatherByDay(weather, day);
                 weathersByDay.Add(weatherByDay);
             }
@@ -20,54 +20,57 @@ namespace WeatherPredictionMachine
             return weathersByDay;
         }
 
-        public string PredictWeather(double t)
+        public string PredictWeatherBy(int day)
         {
-            var betasoidePosition = CalculteCoordinates(2000, -3, t);
-            var ferengiePosition = CalculteCoordinates(500, -1, t);
-            var vulcanoPosition = CalculteCoordinates(1000, 5, t);
+            // I can retreive the planets from database
+            var betasoidePosition = CalculteCoordinates(2000, -3, day);
+            var ferengiePosition = CalculteCoordinates(500, -1, day);
+            var vulcanoPosition = CalculteCoordinates(1000, 5, day);
             var weather = DeterminateWheater(betasoidePosition, ferengiePosition, vulcanoPosition);
 
             return weather;
         }
 
+        private bool ThereIsDrought(Point p1, Point p2)
+        {
+            var m = (p2.Y - p1.Y) / (p2.X - p1.X);
+            var independentConstant = p1.Y - m * p1.X;
+            return independentConstant == 0;
+        }
+
+        private bool ArePlanetsAligned(Point referencePoint, Point p2, Point p3)
+        {
+            var m1 = (p2.Y - referencePoint.Y) / (p2.X - referencePoint.X);
+            var m2 = (p3.Y - referencePoint.Y) / (p3.X - referencePoint.X);
+
+            return m1 == m2;
+        }
+
+        private bool IsRainyDay(Point p1, Point p2, Point p3)
+        {
+            var originPoint = new Point { X = 0, Y = 0 };
+            return PoligonArea(new Point[] { p1, p2, p3 }) > PoligonArea(new Point[] { p1, p2, p3, originPoint });
+        }
+
         private string DeterminateWheater(Point p1, Point p2, Point p3)
         {
-            int b = 0;
-            var m1 = (p2.Y - p1.Y) / (p2.X - p1.X);
-            var m2 = (p3.Y - p1.Y) / (p3.X - p1.X);
-
-            if (m1 == m2)
+            if (ArePlanetsAligned(p1, p2, p3))
             {
-                b = p1.Y - m1 * p1.X;
-                // para por el centro
-                if (b == 0)
+                if (ThereIsDrought(p1, p2 ))
                 {
                     // Sequia
                     return "Sequia";
                 }
-                else
-                {
-                    // Condiciones optimas de presion y temperatura
+                // Condiciones optimas de presion y temperatura
                     return "Condiciones ideales";
-                }
             }
-
-            //triangulo
-            // Si el area del triangulo con los 3 puntos es mayor
-            // al area del poligono de 4 vertices contando el centro,
-            // el centro esta dentro del triangulo
-            var originPoint = new Point { X = 0, Y = 0 };
             
-            if (PoligonArea(new Point[] { p1, p2, p3 }) > PoligonArea(new Point[] { p1, p2, p3, originPoint }))
+            if (IsRainyDay(p1, p2, p3))
             {
-                // determinar el dia maximo de lluvia calculando el perimetro.
-                // guardar el dia
                 return "Lluvia";
             }
 
             return "Incorrecto";
-            // encontrar el maximo dia 
-
         }
 
         private float PoligonArea(params Point[] points)
@@ -93,7 +96,6 @@ namespace WeatherPredictionMachine
 
         private Point CalculteCoordinates(int distance, double angularVelocity, double t)
         {
-            // necesitp saber la pos anterior
             var point = new Point();
             point.X = Convert.ToInt32(0 + distance * Math.Cos(angularVelocity * t));
             point.Y = Convert.ToInt32(0 + distance * Math.Sin(angularVelocity * t));

@@ -1,4 +1,5 @@
 ﻿using System;
+using WeatherPredictionMachine.Business;
 
 namespace WeatherPredictionMachine
 {
@@ -8,7 +9,7 @@ namespace WeatherPredictionMachine
         {
             Console.WriteLine("Hello World!");
 
-            var results = new Machine().Predict();
+            var results = new WeatherMachine().Predict();
             foreach (var weather in results)
             {
                 Console.WriteLine(String.Format("Dia:{0} clima:{1}", weather.Day, weather.Weather));

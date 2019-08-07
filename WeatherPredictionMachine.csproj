@@ -5,4 +5,11 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove=".gitignore" />
+    <None Remove="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Business\" />
+  </ItemGroup>
 </Project>

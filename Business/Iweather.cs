@@ -1,5 +1,5 @@
 ﻿
-namespace WeatherPredictionMachine
+namespace WeatherPredictionMachine.Business
 {
     public interface IWeather
     {
