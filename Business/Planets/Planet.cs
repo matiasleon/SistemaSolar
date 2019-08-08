@@ -1,5 +1,7 @@
-﻿
-namespace WeatherPredictionMachine.Entitites
+﻿using System;
+using WeatherPredictionMachine.Commons;
+
+namespace WeatherPredictionMachine.Planets
 {
     public class Planet
     {
@@ -10,5 +12,7 @@ namespace WeatherPredictionMachine.Entitites
         public string Description { get; set; }
 
         public Point Point { get; set; }
+
+        public int Period => Convert.ToInt32(Math.PI/AngularVelocity);
     }
 }

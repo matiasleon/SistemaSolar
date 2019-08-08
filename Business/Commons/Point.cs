@@ -1,5 +1,5 @@
 ﻿
-namespace WeatherPredictionMachine
+namespace WeatherPredictionMachine.Commons
 {
     public class Point
     {

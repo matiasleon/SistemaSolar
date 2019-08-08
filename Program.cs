@@ -1,5 +1,5 @@
 ﻿using System;
-using WeatherPredictionMachine.Business;
+using WeatherPredictionMachine.Weathers;
 
 namespace WeatherPredictionMachine
 {

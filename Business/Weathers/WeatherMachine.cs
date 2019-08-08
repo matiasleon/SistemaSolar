@@ -1,31 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using WeatherPredictionMachine.Entitites;
+using WeatherPredictionMachine.Business.Weather;
+using WeatherPredictionMachine.Commons;
+using WeatherPredictionMachine.Weathers.Updaters;
 
-namespace WeatherPredictionMachine.Business
+namespace WeatherPredictionMachine.Weathers
 {
     public class WeatherMachine
     {
+        private readonly WeatherCountUpdater weatherCountUpdater;
+
+        public WeatherMachine()
+        {
+            this.weatherCountUpdater = new WeatherCountUpdater();
+        }
+
         public IEnumerable<WeatherByDay> Predict()
         {
+            var weatherResults = new WeatherResults();
             var weathersByDay = new List<WeatherByDay>();
             for (int day = 1; day <= 360; day++)
             {
                 var weather = PredictWeatherBy(day);
-                var weatherByDay = new WeatherByDay(weather, day);
+                weatherCountUpdater.Update(weatherResults, weather.Type);
+                var weatherByDay = new WeatherByDay(weather.Name, day);
+
                 weathersByDay.Add(weatherByDay);
             }
 
             return weathersByDay;
         }
 
-        public string PredictWeatherBy(int day)
+        public Weather PredictWeatherBy(int day)
         {
             // I can retreive the planets from database
-            var betasoidePosition = CalculteCoordinates(2000, -3, day);
-            var ferengiePosition = CalculteCoordinates(500, -1, day);
-            var vulcanoPosition = CalculteCoordinates(1000, 5, day);
+            var betasoidePosition = CalculteCoordinates(2000, -3, day); // 2 dias para dar una vuelta 
+            var ferengiePosition = CalculteCoordinates(500, -1, day); // 6 dias para una veulta
+            var vulcanoPosition = CalculteCoordinates(1000, 5, day); // 1 dia para una vuelta
             var weather = DeterminateWheater(betasoidePosition, ferengiePosition, vulcanoPosition);
 
             return weather;
@@ -52,25 +63,25 @@ namespace WeatherPredictionMachine.Business
             return PoligonArea(new Point[] { p1, p2, p3 }) > PoligonArea(new Point[] { p1, p2, p3, originPoint });
         }
 
-        private string DeterminateWheater(Point p1, Point p2, Point p3)
+        private Weather DeterminateWheater(Point p1, Point p2, Point p3)
         {
             if (ArePlanetsAligned(p1, p2, p3))
             {
                 if (ThereIsDrought(p1, p2 ))
                 {
                     // Sequia
-                    return "Sequia";
+                    return new Weather("Sequia", WeatherType.Drought);
                 }
                 // Condiciones optimas de presion y temperatura
-                    return "Condiciones ideales";
+                return new Weather("condiciones ideales", WeatherType.IdealConditions);
             }
             
             if (IsRainyDay(p1, p2, p3))
             {
-                return "Lluvia";
+                return new Weather("LLuvia", WeatherType.Rainy);
             }
 
-            return "Incorrecto";
+            return new Weather("Incorrecto", WeatherType.NotDefined);
         }
 
         private float PoligonArea(params Point[] points)
