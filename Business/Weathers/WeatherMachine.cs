@@ -1,34 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
 using WeatherPredictionMachine.Business.Weather;
+using WeatherPredictionMachine.Business.Weathers;
+using WeatherPredictionMachine.Business.Weathers.Contexts;
 using WeatherPredictionMachine.Commons;
-using WeatherPredictionMachine.Weathers.Updaters;
+using WeatherPredictionMachine.Planets;
 
 namespace WeatherPredictionMachine.Weathers
 {
     public class WeatherMachine
     {
-        private readonly WeatherCountUpdater weatherCountUpdater;
-
-        public WeatherMachine()
-        {
-            this.weatherCountUpdater = new WeatherCountUpdater();
-        }
 
         public IEnumerable<WeatherByDay> Predict()
         {
-            var weatherResults = new WeatherResults();
             var weathersByDay = new List<WeatherByDay>();
-            for (int day = 1; day <= 360; day++)
-            {
-                var weather = PredictWeatherBy(day);
-                weatherCountUpdater.Update(weatherResults, weather.Type);
-                var weatherByDay = new WeatherByDay(weather.Name, day);
 
+            var betasoideContext = new PlanetCalculationContext(new Planet());
+            var ferengieContext = new PlanetCalculationContext(new Planet());
+            var vulcanoContext = new PlanetCalculationContext(new Planet());
+
+            var weatherByDay = PredictDay(1, betasoideContext, ferengieContext, vulcanoContext);
+            weathersByDay.Add(weatherByDay);
+
+            for (int day = 2; day <= 3600; day++)
+            {
+                weatherByDay = PredictDay(day, betasoideContext, ferengieContext, vulcanoContext);
+                // persist on database
                 weathersByDay.Add(weatherByDay);
             }
 
+            // change to final results
             return weathersByDay;
+        }
+
+        private WeatherByDay PredictDay(int day,
+                                        PlanetCalculationContext p1,
+                                        PlanetCalculationContext p2,
+                                        PlanetCalculationContext p3)
+        {
+            var weather = PredictWeatherBy(day);
+            UpdatePlanetsDataContext(p1, weather.Type);
+            UpdatePlanetsDataContext(p2, weather.Type);
+            UpdatePlanetsDataContext(p3, weather.Type);
+
+            return new WeatherByDay(weather.Name, day);
+        }
+
+        private void UpdatePlanetsDataContext(PlanetCalculationContext context, WeatherType weatherType)
+        {
+            context.DaysPerPeriodTracking++;
+            
+            if (context.DaysPerPeriodTracking <= context.Planet.Period)
+            {
+               if(weatherType == context.LastWeather)
+                {
+                    context.DaysPerPeriodWithSameWeatherTracking++;
+                }
+                else
+                {
+                    context.DaysPerPeriodWithSameWeatherTracking = 0;
+                }
+            }
+            else
+            {
+                context.DaysPerPeriodTracking = 0;
+                if(context.DaysPerPeriodWithSameWeatherTracking == context.Planet.Period)
+                {
+                    context.TotalPeriods++;
+                    context.SetOcurrence(weatherType);
+                }
+            }
         }
 
         public Weather PredictWeatherBy(int day)
@@ -63,11 +104,12 @@ namespace WeatherPredictionMachine.Weathers
             return PoligonArea(new Point[] { p1, p2, p3 }) > PoligonArea(new Point[] { p1, p2, p3, originPoint });
         }
 
+        // use chain of responsability
         private Weather DeterminateWheater(Point p1, Point p2, Point p3)
         {
             if (ArePlanetsAligned(p1, p2, p3))
             {
-                if (ThereIsDrought(p1, p2 ))
+                if (ThereIsDrought(p1, p2))
                 {
                     // Sequia
                     return new Weather("Sequia", WeatherType.Drought);
@@ -86,13 +128,11 @@ namespace WeatherPredictionMachine.Weathers
 
         private float PoligonArea(params Point[] points)
         {
-            // Add the first point to the end.
             var lengthPoints = points.Length;
             Point[] pts = new Point[lengthPoints + 1];
             points.CopyTo(pts, 0);
             pts[lengthPoints] = points[0];
 
-            // Get the areas.
             float area = 0;
             for (int i = 0; i < lengthPoints; i++)
             {
@@ -101,7 +141,6 @@ namespace WeatherPredictionMachine.Weathers
                     (pts[i + 1].Y + pts[i].Y) / 2;
             }
 
-            // Return the result.
             return Math.Abs(area);
         }
 

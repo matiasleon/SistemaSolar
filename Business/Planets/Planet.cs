@@ -13,6 +13,9 @@ namespace WeatherPredictionMachine.Planets
 
         public Point Point { get; set; }
 
+        /// <summary>
+        /// Unidad de medida es el dia
+        /// </summary>
         public int Period => Convert.ToInt32(Math.PI/AngularVelocity);
     }
 }

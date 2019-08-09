@@ -9,4 +9,8 @@
     <None Remove=".gitignore" />
     <None Remove="README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Business\Weathers\Contexts\" />
+    <Folder Include="Business\Weathers\Calculators\" />
+  </ItemGroup>
 </Project>
