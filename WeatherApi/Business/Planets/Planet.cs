@@ -1,7 +1,7 @@
 ﻿using System;
-using WeatherPredictionMachine.Commons;
+using WeatherApi.Commons;
 
-namespace WeatherPredictionMachine.Planets
+namespace WeatherApi.Planets
 {
     public class Planet
     {

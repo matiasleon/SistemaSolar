@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using WeatherPredictionMachine.Weathers;
+using WeatherApi.Weathers;
 
-namespace WeatherPredictionMachine.Business.Weathers
+namespace WeatherApi.Business.Weathers
 {
     public class PredictionResults
     {

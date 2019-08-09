@@ -1,5 +1,5 @@
 ﻿
-namespace WeatherPredictionMachine.Weathers
+namespace WeatherApi.Weathers
 {
     public class WeatherByDay
     {

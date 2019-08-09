@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using WeatherPredictionMachine.Planets;
-using WeatherPredictionMachine.Weathers;
+using WeatherApi.Planets;
+using WeatherApi.Weathers;
 
-namespace WeatherPredictionMachine.Business.Weathers.Contexts
+namespace WeatherApi.Business.Weathers.Contexts
 {
     public class PlanetCalculationContext
     {
@@ -36,7 +36,9 @@ namespace WeatherPredictionMachine.Business.Weathers.Contexts
 
         public void ShowResults()
         {
-
+            Console.WriteLine(OccurrencesByWeather[WeatherType.Drought]);
+            Console.WriteLine(OccurrencesByWeather[WeatherType.IdealConditions]);
+            Console.WriteLine(OccurrencesByWeather[WeatherType.Rainy]);
         }
     }
 }
