@@ -45,7 +45,7 @@ namespace WeatherApi.Weathers
                                         PlanetCalculationContext p2,
                                         PlanetCalculationContext p3)
         {
-            var weather = PredictWeatherBy(day);
+            var weather = PredictBy(day);
             UpdatePlanetsDataContext(p1, weather.Type);
             UpdatePlanetsDataContext(p2, weather.Type);
             UpdatePlanetsDataContext(p3, weather.Type);
@@ -79,7 +79,7 @@ namespace WeatherApi.Weathers
             }
         }
 
-        public Weather PredictWeatherBy(int day)
+        public Weather PredictBy(int day)
         {
             // I can retreive the planets from database
             var betasoidePosition = geometricCalculator.CalculteCoordinates(2000, -3, day); // 2 dias para dar una vuelta 
