@@ -1,7 +1,7 @@
 ﻿using System;
 using WeatherApi.Weathers;
 
-namespace WeatherApi.Business.Weather
+namespace WeatherApi.Business.Weathers
 {
     public class Weather
     {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WeatherApi.Business.Weather;
+using WeatherApi.Business.Weathers;
 using WeatherApi.Business.Weathers.Calculators;
 using WeatherApi.Business.Weathers.Contexts;
 using WeatherApi.Business.Weathers.Validators;

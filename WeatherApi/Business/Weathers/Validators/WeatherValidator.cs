@@ -28,7 +28,7 @@ namespace WeatherApi.Business.Weathers.Validators
 
         public Weather DeterminateWheater(Point p1, Point p2, Point p3)
         {
-            if (geome ArePlanetsAligned(p1, p2, p3))
+            if (geometricCalculator.ArePlanetsAligned(p1, p2, p3))
             {
                 if (ThereIsDrought(p1, p2))
                 {

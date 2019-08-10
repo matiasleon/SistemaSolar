@@ -1,5 +1,5 @@
 ﻿
-namespace WeatherApi.Weathers
+namespace WeatherApi.Business.Weathers
 {
     public enum WeatherType
     {
