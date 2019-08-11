@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using WeatherApi.Business.Weathers;
 using WeatherApi.Business.Weathers.Calculators;
 using WeatherApi.Business.Weathers.Contexts;
+using WeatherApi.Business.Weathers.PeriodsByWeather;
 using WeatherApi.Business.Weathers.Validators;
 using WeatherApi.Planets;
 
@@ -13,21 +15,24 @@ namespace WeatherApi.Weathers
 
         private readonly WeatherValidator weatherValidator;
 
+        private readonly PeriodsByWeatherFactory periodsByWeatherFactory;
+
         public WeatherMachine(GeometricCalculator geometricCalculator,
-                              WeatherValidator weatherValidator)
+                              WeatherValidator weatherValidator,
+                              PeriodsByWeatherFactory periodsByWeatherFactory)
         {
             this.geometricCalculator = geometricCalculator;
             this.weatherValidator = weatherValidator;
+            this.periodsByWeatherFactory = periodsByWeatherFactory;
         }
 
-        public IEnumerable<WeatherByDay> Predict()
+        public IEnumerable<PeriodsByWeather> Predict()
         {
             var weathersByDay = new List<WeatherByDay>();
 
             var betasoideContext = new PlanetCalculationContext(new Planet());
             var ferengieContext = new PlanetCalculationContext(new Planet());
             var vulcanoContext = new PlanetCalculationContext(new Planet());
-
             var weatherByDay = PredictDay(1, betasoideContext, ferengieContext, vulcanoContext);
             weathersByDay.Add(weatherByDay);
 
@@ -36,47 +41,25 @@ namespace WeatherApi.Weathers
                 weatherByDay = PredictDay(day, betasoideContext, ferengieContext, vulcanoContext);
                 weathersByDay.Add(weatherByDay);
             }
+            var periodsByWeatherForBetasoide = periodsByWeatherFactory.Create(betasoideContext);
+            var periodsByWeatherForFerengie = periodsByWeatherFactory.Create(ferengieContext);
+            var periodsByWeatherForvulcano = periodsByWeatherFactory.Create(vulcanoContext);
+            
 
-            return weathersByDay;
+            return periodsByWeatherForBetasoide.Concat(periodsByWeatherForFerengie).Concat(periodsByWeatherForvulcano);
         }
 
-        private WeatherByDay PredictDay(int day,
-                                        PlanetCalculationContext p1,
-                                        PlanetCalculationContext p2,
-                                        PlanetCalculationContext p3)
+        private WeatherByDay PredictDay(int day, 
+                                        PlanetCalculationContext planetOneContext,
+                                        PlanetCalculationContext planetTwoContext, 
+                                        PlanetCalculationContext planetThreeContext)
         {
             var weather = PredictBy(day);
-            UpdatePlanetsDataContext(p1, weather.Type);
-            UpdatePlanetsDataContext(p2, weather.Type);
-            UpdatePlanetsDataContext(p3, weather.Type);
+            planetOneContext.UpdateContext(weather.Type);
+            planetTwoContext.UpdateContext(weather.Type);
+            planetThreeContext.UpdateContext(weather.Type);
 
             return new WeatherByDay(weather.Name, day);
-        }
-
-        private void UpdatePlanetsDataContext(PlanetCalculationContext context, WeatherType weatherType)
-        {
-            context.DaysPerPeriodTracking++;
-            
-            if (context.DaysPerPeriodTracking <= context.Planet.Period)
-            {
-               if(weatherType == context.LastWeather)
-                {
-                    context.DaysPerPeriodWithSameWeatherTracking++;
-                }
-                else
-                {
-                    context.DaysPerPeriodWithSameWeatherTracking = 0;
-                }
-            }
-            else
-            {
-                context.DaysPerPeriodTracking = 0;
-                if(context.DaysPerPeriodWithSameWeatherTracking == context.Planet.Period)
-                {
-                    context.TotalPeriods++;
-                    context.SetOcurrence(weatherType);
-                }
-            }
         }
 
         public Weather PredictBy(int day)

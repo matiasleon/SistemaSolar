@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WeatherApi.Business.Weathers.Calculators;
+using WeatherApi.Business.Weathers.PeriodsByWeather;
 using WeatherApi.Business.Weathers.Validators;
 using WeatherApi.Weathers;
 
@@ -33,6 +34,7 @@ namespace WeatherApi
             services.AddTransient<WeatherMachine>();
             services.AddTransient<GeometricCalculator>();
             services.AddTransient<WeatherValidator>();
+            services.AddTransient<PeriodsByWeatherFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

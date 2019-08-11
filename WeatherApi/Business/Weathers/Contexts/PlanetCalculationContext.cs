@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using WeatherApi.Planets;
-using WeatherApi.Weathers;
 
 namespace WeatherApi.Business.Weathers.Contexts
 {
     public class PlanetCalculationContext
     {
+       public Planet Planet { get; private set; }
+     
         private Dictionary<WeatherType, int> OccurrencesByWeather = new Dictionary<WeatherType, int>();
 
-        public Planet Planet { get; set; }
+        private int TotalPeriods { get; set; }
 
-        public int DaysPerPeriodTracking { get; set; }
+        private int DaysPerPeriodTracking { get; set; }
 
-        public int DaysPerPeriodWithSameWeatherTracking { get; set; }
+        private int DaysPerPeriodWithSameWeatherTracking { get; set; }
 
-        public WeatherType LastWeather { get; set; }
-
-        public int TotalPeriods { get; set; }
-
-        public List<PeriodsByWeather> PeriodsByWeather { get; set; }
+        private WeatherType LastWeather { get; set; }
 
         public PlanetCalculationContext(Planet planet)
         {
@@ -29,16 +26,40 @@ namespace WeatherApi.Business.Weathers.Contexts
             OccurrencesByWeather.Add(WeatherType.IdealConditions, 0);
         }
 
-        public void SetOcurrence(WeatherType weatherType)
+        private void SetOcurrence(WeatherType weatherType)
         {
             OccurrencesByWeather[weatherType]++;
         }
 
-        public void ShowResults()
+        public int GetCurrentPeriodsBy(WeatherType weathertype)
         {
-            Console.WriteLine(OccurrencesByWeather[WeatherType.Drought]);
-            Console.WriteLine(OccurrencesByWeather[WeatherType.IdealConditions]);
-            Console.WriteLine(OccurrencesByWeather[WeatherType.Rainy]);
+            return OccurrencesByWeather[weathertype];
+        }
+
+        public void UpdateContext(WeatherType weatherType)
+        {
+            DaysPerPeriodTracking++;
+
+            if (DaysPerPeriodTracking <= Planet.Period)
+            {
+                if (weatherType == LastWeather)
+                {
+                    DaysPerPeriodWithSameWeatherTracking++;
+                }
+                else
+                {
+                    DaysPerPeriodWithSameWeatherTracking = 0;
+                }
+            }
+            else
+            {
+                DaysPerPeriodTracking = 0;
+                if (DaysPerPeriodWithSameWeatherTracking == Planet.Period)
+                {
+                    TotalPeriods++;
+                    SetOcurrence(weatherType);
+                }
+            }
         }
     }
 }
