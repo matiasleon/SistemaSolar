@@ -5,17 +5,24 @@ namespace WeatherApi.Planets
 {
     public class Planet
     {
-        public double AngularVelocity { get; set; }
+        public int AngularVelocity { get; set; }
 
-        public double DistanceToSun { get; set; }
+        public int DistanceToSun { get; set; }
 
-        public string Description { get; set; }
+        public string Name { get; set; }
 
-        public Point Point { get; set; }
+        public Point CurrentPosition { get; set; }
 
         /// <summary>
         /// Unidad de medida es el dia
         /// </summary>
-        public int Period => Convert.ToInt32(Math.PI/AngularVelocity);
+        public int Period => Math.Abs(Convert.ToInt32(Math.PI/AngularVelocity));
+
+        public Planet(string name, int distanceToSun, int angularVelocity)
+        {
+            Name = name;
+            DistanceToSun = distanceToSun;
+            AngularVelocity = angularVelocity;
+        }
     }
 }

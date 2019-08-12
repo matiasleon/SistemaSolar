@@ -10,8 +10,6 @@ namespace WeatherApi.Business.Weathers.Contexts
      
         private Dictionary<WeatherType, int> OccurrencesByWeather = new Dictionary<WeatherType, int>();
 
-        private int TotalPeriods { get; set; }
-
         private int DaysPerPeriodTracking { get; set; }
 
         private int DaysPerPeriodWithSameWeatherTracking { get; set; }
@@ -24,6 +22,7 @@ namespace WeatherApi.Business.Weathers.Contexts
             OccurrencesByWeather.Add(WeatherType.Drought, 0);
             OccurrencesByWeather.Add(WeatherType.Rainy, 0);
             OccurrencesByWeather.Add(WeatherType.IdealConditions, 0);
+            OccurrencesByWeather.Add(WeatherType.NotDefined, 0);
         }
 
         private void SetOcurrence(WeatherType weatherType)
@@ -56,10 +55,10 @@ namespace WeatherApi.Business.Weathers.Contexts
                 DaysPerPeriodTracking = 0;
                 if (DaysPerPeriodWithSameWeatherTracking == Planet.Period)
                 {
-                    TotalPeriods++;
                     SetOcurrence(weatherType);
                 }
             }
+            LastWeather = weatherType;  
         }
     }
 }
