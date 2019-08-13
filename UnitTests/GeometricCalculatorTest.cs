@@ -1,6 +1,6 @@
 using System;
-using WeatherApi.Business.Weathers.Calculators;
-using WeatherApi.Commons;
+using API.Business.Weathers.Calculators;
+using API.Commons;
 using Xunit;
 
 namespace UnitTests

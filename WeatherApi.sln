@@ -1,9 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherApi", "WeatherApi\WeatherApi.csproj", "{EB9A8A42-512D-48D3-9949-3710D1E9E292}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{A1D31A3E-545E-4FC4-A7A4-DFC7849C3D4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{A1D31A3E-545E-4FC4-A7A4-DFC7849C3D4D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{7B15BDA1-636F-4B4B-B05C-DF8B7393F18E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +12,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EB9A8A42-512D-48D3-9949-3710D1E9E292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB9A8A42-512D-48D3-9949-3710D1E9E292}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB9A8A42-512D-48D3-9949-3710D1E9E292}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB9A8A42-512D-48D3-9949-3710D1E9E292}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1D31A3E-545E-4FC4-A7A4-DFC7849C3D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1D31A3E-545E-4FC4-A7A4-DFC7849C3D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1D31A3E-545E-4FC4-A7A4-DFC7849C3D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1D31A3E-545E-4FC4-A7A4-DFC7849C3D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B15BDA1-636F-4B4B-B05C-DF8B7393F18E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B15BDA1-636F-4B4B-B05C-DF8B7393F18E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B15BDA1-636F-4B4B-B05C-DF8B7393F18E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B15BDA1-636F-4B4B-B05C-DF8B7393F18E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD7B37C2-F597-40AA-AF0D-79EEB192013F}
 	EndGlobalSection
 EndGlobal
