@@ -1,5 +1,4 @@
 ﻿using System;
-using API.Weathers;
 
 namespace API.Business.Weathers
 {

@@ -5,7 +5,6 @@ namespace API.Business.Weathers.Calculators
 {
     public class GeometricCalculator
     {
-       
         public float PoligonArea(params Point[] points)
         {
             var lengthPoints = points.Length;
@@ -33,12 +32,22 @@ namespace API.Business.Weathers.Calculators
             return point;
         }
 
-        public bool ArePlanetsAligned(Point referencePoint, Point p2, Point p3)
+        public double CalculatePerimeterOfTriangule(Point p1, Point p2, Point p3)
         {
-            var m1 = (p2.Y - referencePoint.Y) / (p2.X - referencePoint.X);
-            var m2 = (p3.Y - referencePoint.Y) / (p3.X - referencePoint.X);
+            var p1p2 = CalculateDistanceBetween(p1, p2);
+            var p1p3 = CalculateDistanceBetween(p1, p3);
+            var p2p3 = CalculateDistanceBetween(p2, p3);
+            var perimeter = p1p2 + p1p3 + p2p3;
 
-            return m1 == m2;
+            return perimeter;
+        }
+
+        private double CalculateDistanceBetween(Point p1, Point p2)
+        {
+            var a = (double)(p2.X - p1.X);
+            var b = (double)(p2.Y - p1.Y);
+
+            return Math.Sqrt(a * a + b * b);
         }
     }
 }

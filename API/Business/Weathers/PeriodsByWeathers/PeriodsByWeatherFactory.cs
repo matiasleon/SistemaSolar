@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Business.Weathers.Contexts;
 
-namespace API.Business.Weathers.PeriodsByWeather
+namespace API.Business.Weathers.PeriodsByWeathers
 {
     public class PeriodsByWeatherFactory
     {

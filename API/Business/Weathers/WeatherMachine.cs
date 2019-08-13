@@ -4,7 +4,10 @@ using API.Business.Weathers;
 using API.Business.Weathers.Calculators;
 using API.Business.Weathers.Contexts;
 using API.Business.Weathers.PeriodsByWeather;
+using API.Business.Weathers.PeriodsByWeathers;
+using API.Business.Weathers.Results;
 using API.Business.Weathers.Validators;
+using API.Commons;
 using API.Planets;
 
 namespace API.Weathers
@@ -26,60 +29,81 @@ namespace API.Weathers
             this.periodsByWeatherFactory = periodsByWeatherFactory;
         }
 
-        public IEnumerable<PeriodsByWeather> Predict()
+        public FinalResults Predict()
         {
-            var weathersByDay = new List<WeatherByDay>();
+            var origin = new Point() { X = 0, Y = 0 };
 
-            var betasoideContext = new PlanetCalculationContext(new Planet("betasoide", 2000, -3));
-            var ferengieContext = new PlanetCalculationContext(new Planet("ferengie", 500, -1));
-            var vulcanoContext = new PlanetCalculationContext(new Planet("vulcano", 1000, 5));
-            var weatherByDay = PredictDay(1, betasoideContext, ferengieContext, vulcanoContext);
-            weathersByDay.Add(weatherByDay);
+            var betasoide = new Planet("betasoide", 2000, -3);
+            var ferengie = new Planet("ferengie", 500, -1);
+            var vulcano = new Planet("vulcano", 1000, 5);
 
-            for (int day = 2; day <= 3600; day++)
-            {
-                weatherByDay = PredictDay(day, betasoideContext, ferengieContext, vulcanoContext);
-                weathersByDay.Add(weatherByDay);
-            }
+            var betasoideContext = new PlanetCalculationContext(betasoide);
+            var ferengieContext = new PlanetCalculationContext(ferengie);
+            var vulcanoContext = new PlanetCalculationContext(vulcano);
 
-            var periodsByWeatherForBetasoide = periodsByWeatherFactory.Create(betasoideContext);
-            var periodsByWeatherForFerengie = periodsByWeatherFactory.Create(ferengieContext);
-            var periodsByWeatherForvulcano = periodsByWeatherFactory.Create(vulcanoContext);
-            
-            return periodsByWeatherForBetasoide.Concat(periodsByWeatherForFerengie).Concat(periodsByWeatherForvulcano);
-        }
+            var weather = Predict(1, betasoide, ferengie, vulcano);
 
-        private WeatherByDay PredictDay(int day, 
-                                        PlanetCalculationContext betasoideContext,
-                                        PlanetCalculationContext ferengieContext, 
-                                        PlanetCalculationContext vulcanoContext)
-        {
-            var weather = PredictBy(day, betasoideContext.Planet, ferengieContext.Planet, vulcanoContext.Planet);
             betasoideContext.UpdateContext(weather.Type);
             ferengieContext.UpdateContext(weather.Type);
             vulcanoContext.UpdateContext(weather.Type);
 
-            return new WeatherByDay(weather.Name, day);
+            double maxPerimeter = 0;
+            int maxRainyDay = 1;
+
+            for (int day = 2; day <= 3600; day++)
+            {
+                weather = Predict(day);
+
+                betasoideContext.UpdateContext(weather.Type);
+                ferengieContext.UpdateContext(weather.Type);
+                vulcanoContext.UpdateContext(weather.Type);
+
+                if (weather.Type == WeatherType.Rainy)
+                {
+                    var betasoidePosition = geometricCalculator.CalculteCoordinates(betasoide.DistanceToSun, betasoide.AngularVelocity, day);
+                    var ferengiePosition = geometricCalculator.CalculteCoordinates(ferengie.DistanceToSun, ferengie.AngularVelocity, day);
+                    var vulcanoPosition = geometricCalculator.CalculteCoordinates(vulcano.DistanceToSun, vulcano.AngularVelocity, day);
+                    var perimeterTriangule = geometricCalculator.CalculatePerimeterOfTriangule(betasoidePosition, ferengiePosition, vulcanoPosition);
+                    if (perimeterTriangule > maxPerimeter)
+                    {
+                        maxPerimeter = perimeterTriangule;
+                        maxRainyDay = day;
+                    }
+                }
+            }
+
+            // pass to finarl result factory
+            var periodsByWeatherForBetasoide = periodsByWeatherFactory.Create(betasoideContext);
+            var periodsByWeatherForFerengie = periodsByWeatherFactory.Create(ferengieContext);
+            var periodsByWeatherForvulcano = periodsByWeatherFactory.Create(vulcanoContext);
+            
+            var periosByWeather = periodsByWeatherForBetasoide.Concat(periodsByWeatherForFerengie).Concat(periodsByWeatherForvulcano);
+
+            return new FinalResults() { PeriodsByWeather = periosByWeather, RainyMaxValueDate = maxRainyDay };
         }
 
-        public Weather PredictBy(int day, Planet betasoide, Planet ferengie, Planet vulcano)
+        public Weather Predict(int day, Planet betasoide, Planet ferengie, Planet vulcano)
         {
-            var betasoidePosition = geometricCalculator.CalculteCoordinates(betasoide.DistanceToSun, betasoide.AngularVelocity, day); // 2 dias para dar una vuelta 
-            var ferengiePosition = geometricCalculator.CalculteCoordinates(ferengie.DistanceToSun, ferengie.AngularVelocity, day); // 6 dias para una veulta
-            var vulcanoPosition = geometricCalculator.CalculteCoordinates(vulcano.DistanceToSun, vulcano.AngularVelocity, day); // 1 dia para una vuelta
-            var weather = weatherValidator.DeterminateWheater(betasoidePosition, ferengiePosition, vulcanoPosition);
+            var origin = new Point() { X = 0, Y = 0 };
+            var betasoidePosition = geometricCalculator.CalculteCoordinates(betasoide.DistanceToSun, betasoide.AngularVelocity, day); 
+            var ferengiePosition = geometricCalculator.CalculteCoordinates(ferengie.DistanceToSun, ferengie.AngularVelocity, day);
+            var vulcanoPosition = geometricCalculator.CalculteCoordinates(vulcano.DistanceToSun, vulcano.AngularVelocity, day);
+
+            var totalAreaOfPlanets = geometricCalculator.PoligonArea(betasoidePosition, ferengiePosition, vulcanoPosition);
+            var totalAreaOfPlanetsWithOrigin = geometricCalculator.PoligonArea(betasoidePosition, ferengiePosition, vulcanoPosition, origin);
+
+            var weather = weatherValidator.DeterminateWheater(totalAreaOfPlanets, totalAreaOfPlanetsWithOrigin);
 
             return weather;
         }
 
-        public Weather PredictBy(int day)
+        public Weather Predict(int day)
         {
             var betasoide = new Planet("betasoide", 2000, -3);
             var ferengie = new Planet("ferengie", 500, -1);
             var vulcano = new Planet("vulcano", 1000, 5);
-            var weather = PredictBy(day, betasoide, ferengie, vulcano);
 
-            return weather;
+            return Predict(day, betasoide, ferengie, vulcano);
         }
     }
 }

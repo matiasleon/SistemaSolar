@@ -26,7 +26,7 @@ namespace API.Controllers
                 var prediction = weatherMachine.Predict();
                 return Ok(prediction);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Error en el pedido");
             }
@@ -40,7 +40,7 @@ namespace API.Controllers
                 return BadRequest("Dia incorrecto");
             }
            
-            var weather = weatherMachine.PredictBy(dia);
+            var weather = weatherMachine.Predict(dia);
             try
             {
                 var prediction = new WeatherPredictionDto() { Clima = weather.Name, Dia = dia };

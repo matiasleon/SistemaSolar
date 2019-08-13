@@ -1,7 +1,7 @@
 ﻿using System;
 using API.Planets;
 
-namespace API.Business.Weathers.PeriodsByWeather
+namespace API.Business.Weathers.PeriodsByWeathers
 {
     public class PeriodsByWeather
     {

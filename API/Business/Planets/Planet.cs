@@ -11,8 +11,6 @@ namespace API.Planets
 
         public string Name { get; set; }
 
-        public Point CurrentPosition { get; set; }
-
         /// <summary>
         /// Unidad de medida es el dia
         /// </summary>
