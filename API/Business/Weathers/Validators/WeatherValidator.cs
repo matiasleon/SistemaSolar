@@ -13,7 +13,7 @@ namespace API.Business.Weathers.Validators
             this.geometricCalculator = geometricCalculator;
         }
 
-        public Weather DeterminateWheater(float areaOfPlanets, float areaOfPlanetsWithOrigin)
+        public Weather DeterminateWheater(double areaOfPlanets, double areaOfPlanetsWithOrigin)
         {
             if (ArePlanetsAligned(areaOfPlanets))
             {
@@ -34,12 +34,12 @@ namespace API.Business.Weathers.Validators
             return new Weather("Incorrecto", WeatherType.NotDefined);
         }
 
-        private bool IsRainyDay(float areaOfPlanets, float areaOfPlanetsWithOrigin)
+        private bool IsRainyDay(double areaOfPlanets, double areaOfPlanetsWithOrigin)
         {
             return areaOfPlanets > areaOfPlanetsWithOrigin;
         }
 
-        private bool ThereIsDrought(float areaOfPlanetsWithOrigin)
+        private bool ThereIsDrought(double areaOfPlanetsWithOrigin)
         {
 
             //var m = (p2.Y - p1.Y) / (p2.X - p1.X);
@@ -49,7 +49,7 @@ namespace API.Business.Weathers.Validators
             return areaOfPlanetsWithOrigin == 0;
         }
 
-        private bool ArePlanetsAligned(float area)
+        private bool ArePlanetsAligned(double area)
         {
             // utilizar el area, si es igual a cero
             //var m1 = (p2.Y - referencePoint.Y) / (p2.X - referencePoint.X);

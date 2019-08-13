@@ -1,4 +1,5 @@
 ﻿using System;
+using API.Business.Commons;
 using API.Commons;
 
 namespace API.Planets
@@ -14,7 +15,7 @@ namespace API.Planets
         /// <summary>
         /// Unidad de medida es el dia
         /// </summary>
-        public int Period => Math.Abs(Convert.ToInt32(Math.PI/AngularVelocity));
+        public double Period => Math.Abs(Math.PI/AngularVelocity).Round(0);
 
         public Planet(string name, int distanceToSun, int angularVelocity)
         {
