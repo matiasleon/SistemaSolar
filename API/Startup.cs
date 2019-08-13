@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Business.Weathers.Calculators;
-using API.Business.Weathers.PeriodsByWeather;
+using API.Business.Weathers.PeriodsByWeathers;
 using API.Business.Weathers.Validators;
 using API.Weathers;
 using Microsoft.AspNetCore.Builder;
