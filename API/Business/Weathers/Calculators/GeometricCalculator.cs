@@ -20,7 +20,7 @@ namespace API.Business.Weathers.Calculators
                     (pts[i + 1].Y + pts[i].Y) / 2;
             }
 
-            return Math.Abs(area);
+            return Convert.ToInt32(Math.Abs(area));
         }
 
         public Point CalculteCoordinates(int distance, double angularVelocity, double t)

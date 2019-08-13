@@ -4,7 +4,6 @@ using API.Business.Weathers;
 using API.Business.Weathers.Calculators;
 using API.Business.Weathers.Contexts;
 using API.Business.Weathers.PeriodsByWeathers;
-using API.Business.Weathers.PeriodsByWeathers;
 using API.Business.Weathers.Results;
 using API.Business.Weathers.Validators;
 using API.Commons;
