@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using API.Dtos;
 using API.Weathers;
+using API.Business.Weathers.Results;
 
 namespace API.Controllers
 {
@@ -19,7 +20,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("prediccion")]
-        public ActionResult<IEnumerable<PredictionDto>> Get()
+        public ActionResult<IEnumerable<Prediction>> Get()
         {
             try
             {

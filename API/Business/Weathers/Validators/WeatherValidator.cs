@@ -34,13 +34,14 @@ namespace API.Business.Weathers.Validators
                 return new Weather("LLuvia", WeatherType.Rainy);
             }
 
-            return new Weather("Incorrecto", WeatherType.NotDefined);
+            return new Weather("No definido", WeatherType.NotDefined);
         }
 
         private bool IsRainyDay(Point p1, Point p2, Point p3)
         {
+            var origin = new Point() { X = 0, Y = 0 };
             var areaOfPlanets = geometricCalculator.PoligonArea(p1, p2, p3);
-            var areaOfPlanetsWithOrigin = geometricCalculator.PoligonArea(p1, p2, p3);
+            var areaOfPlanetsWithOrigin = geometricCalculator.PoligonArea(p1, p2, p3, origin);
 
             return areaOfPlanets > areaOfPlanetsWithOrigin;
         }
@@ -54,8 +55,8 @@ namespace API.Business.Weathers.Validators
 
         private bool ArePlanetsAligned(Point p1, Point p2, Point p3)
         {
-            var m1 = (p2.Y - p1.Y) / (p2.X - p1.X);
-            var m2 = (p3.Y - p1.Y) / (p3.X - p1.X);
+            var m1 = (p3.Y - p1.Y) * (p2.X - p1.X);
+            var m2 = (p2.Y - p1.Y) * (p3.X - p1.X);
 
             return Math.Abs(m1 - m2) < EPSILON;
         }
