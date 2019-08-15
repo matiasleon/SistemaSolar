@@ -43,5 +43,16 @@ namespace UnitTests
             Assert.True(result.Type == WeatherType.IdealConditions);
         }
 
+        [Fact]
+        public void WhenPlanetesDeterminateAtrianguleWithTheSunInsideIsRainy()
+        {
+            var p1 = new Point() { X = 2, Y = 1 };
+            var p2 = new Point() { X = 4, Y = 5 };
+            var p3 = new Point() { X = -3, Y = -5 };
+
+            var result = this.weatherValidator.DeterminateWheater(p1, p2, p3);
+
+            Assert.True(result.Type == WeatherType.Rainy);
+        }
     }
 }
