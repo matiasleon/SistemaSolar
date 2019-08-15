@@ -8,16 +8,19 @@ namespace API.Business.Weathers.Validators
     {
         private readonly GeometricCalculator geometricCalculator;
 
+        private const double EPSILON = 1;
+
         public WeatherValidator(GeometricCalculator geometricCalculator)
         {
             this.geometricCalculator = geometricCalculator;
         }
 
-        public Weather DeterminateWheater(double areaOfPlanets, double areaOfPlanetsWithOrigin)
+        //todo: implementar un chaain of responsability in order to hava a cleaner code
+        public Weather DeterminateWheater(Point p1, Point p2, Point p3)
         {
-            if (ArePlanetsAligned(areaOfPlanets))
+            if (ArePlanetsAligned(p1, p2, p3))
             {
-                if (ThereIsDrought(areaOfPlanetsWithOrigin))
+                if (ThereIsDrought(p1, p2))
                 {
                     // Sequia
                     return new Weather("Sequia", WeatherType.Drought);
@@ -26,7 +29,7 @@ namespace API.Business.Weathers.Validators
                 return new Weather("condiciones ideales", WeatherType.IdealConditions);
             }
 
-            if (IsRainyDay(areaOfPlanets, areaOfPlanetsWithOrigin))
+            if (IsRainyDay(p1, p2, p3))
             {
                 return new Weather("LLuvia", WeatherType.Rainy);
             }
@@ -34,29 +37,27 @@ namespace API.Business.Weathers.Validators
             return new Weather("Incorrecto", WeatherType.NotDefined);
         }
 
-        private bool IsRainyDay(double areaOfPlanets, double areaOfPlanetsWithOrigin)
+        private bool IsRainyDay(Point p1, Point p2, Point p3)
         {
+            var areaOfPlanets = geometricCalculator.PoligonArea(p1, p2, p3);
+            var areaOfPlanetsWithOrigin = geometricCalculator.PoligonArea(p1, p2, p3);
+
             return areaOfPlanets > areaOfPlanetsWithOrigin;
         }
 
-        private bool ThereIsDrought(double areaOfPlanetsWithOrigin)
+        private bool ThereIsDrought(Point p1, Point p2)
         {
-
-            //var m = (p2.Y - p1.Y) / (p2.X - p1.X);
-            //var independentConstant = p1.Y - m * p1.X;
-            //return independentConstant == 0;
-
-            return areaOfPlanetsWithOrigin == 0;
+            var m = (p2.Y - p1.Y) / (p2.X - p1.X);
+            var independentConstant = p1.Y - m * p1.X;
+            return Math.Abs(independentConstant) < EPSILON;
         }
 
-        private bool ArePlanetsAligned(double area)
+        private bool ArePlanetsAligned(Point p1, Point p2, Point p3)
         {
-            // utilizar el area, si es igual a cero
-            //var m1 = (p2.Y - referencePoint.Y) / (p2.X - referencePoint.X);
-            //var m2 = (p3.Y - referencePoint.Y) / (p3.X - referencePoint.X);
+            var m1 = (p2.Y - p1.Y) / (p2.X - p1.X);
+            var m2 = (p3.Y - p1.Y) / (p3.X - p1.X);
 
-            //return m1 == m2;
-            return area == 0;
+            return Math.Abs(m1 - m2) < EPSILON;
         }
     }
 }

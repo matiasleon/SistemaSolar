@@ -16,9 +16,7 @@ namespace API.Business.Weathers.Calculators
             double area = 0;
             for (int i = 0; i < lengthPoints; i++)
             {
-                area +=
-                    (pts[i + 1].X - pts[i].X) *
-                    (pts[i + 1].Y + pts[i].Y) / 2;
+                area += (pts[i + 1].X - pts[i].X) * (pts[i + 1].Y + pts[i].Y) / 2;
             }
 
             return Math.Abs(area).Round();
@@ -26,9 +24,11 @@ namespace API.Business.Weathers.Calculators
 
         public Point CalculteCoordinates(int distance, double angularVelocity, double t)
         {
-            var point = new Point();
-            point.X = (0 + distance * Math.Cos(angularVelocity * t)).Round();
-            point.Y = (0 + distance * Math.Sin(angularVelocity * t)).Round();
+            var point = new Point
+            {
+                X = (0 + distance * Math.Cos(angularVelocity * t)).Round(),
+                Y = (0 + distance * Math.Sin(angularVelocity * t)).Round()
+            };
 
             return point;
         }
@@ -45,8 +45,8 @@ namespace API.Business.Weathers.Calculators
 
         private double CalculateDistanceBetween(Point p1, Point p2)
         {
-            var a = (double)(p2.X - p1.X);
-            var b = (double)(p2.Y - p1.Y);
+            var a = p2.X - p1.X;
+            var b = p2.Y - p1.Y;
 
             return Math.Sqrt(a * a + b * b);
         }

@@ -18,7 +18,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("prediction")]
+        [Route("prediccion")]
         public ActionResult<IEnumerable<PredictionDto>> Get()
         {
             try
@@ -40,15 +40,15 @@ namespace API.Controllers
                 return BadRequest("Dia incorrecto");
             }
            
-            var weather = weatherMachine.Predict(dia);
             try
             {
+                var weather = weatherMachine.Predict(dia);
                 var prediction = new WeatherPredictionDto() { Clima = weather.Name, Dia = dia };
 
                 return Ok(prediction);
             }
             catch (Exception)
-            {;
+            {
                 return StatusCode(500, "Error en el pedido");
             }
         }

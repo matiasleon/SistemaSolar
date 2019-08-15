@@ -19,6 +19,7 @@ namespace API.Business.Weathers.Contexts
         public PlanetCalculationContext(Planet planet)
         {
             Planet = planet;
+            DaysPerPeriodTracking = 0;
             OccurrencesByWeather.Add(WeatherType.Drought, 0);
             OccurrencesByWeather.Add(WeatherType.Rainy, 0);
             OccurrencesByWeather.Add(WeatherType.IdealConditions, 0);
