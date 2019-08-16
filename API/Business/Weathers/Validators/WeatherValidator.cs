@@ -16,9 +16,12 @@ namespace API.Business.Weathers.Validators
 
         public Weather DeterminateWheater(Point p1, Point p2, Point p3)
         {
-            if (ArePlanetsAligned(p1, p2, p3))
+            var origin = new Point() { X = 0, Y = 0 };
+            var triangleArea = this.geometricCalculator.PoligonArea(p1 ,p2, p3);
+            var areaWithOrigin = this.geometricCalculator.PoligonArea(p1, p2, p3, origin);
+            if (ArePlanetsAligned(triangleArea))
             {
-                if (ThereIsDrought(p1, p2))
+                if (ThereIsDrought(areaWithOrigin))
                 {
 
                     return new Weather("Sequia", WeatherType.Drought);
@@ -27,7 +30,7 @@ namespace API.Business.Weathers.Validators
                 return new Weather("condiciones ideales", WeatherType.IdealConditions);
             }
 
-            if (IsRainyDay(p1, p2, p3))
+            if (IsRainyDay(triangleArea, areaWithOrigin))
             {
                 return new Weather("LLuvia", WeatherType.Rainy);
             }
@@ -35,26 +38,19 @@ namespace API.Business.Weathers.Validators
             return new Weather("No definido", WeatherType.NotDefined);
         }
 
-        private bool IsRainyDay(Point p1, Point p2, Point p3)
+        private bool IsRainyDay(double triangleArea, double areaWithOrigin)
         {
-            var origin = new Point() { X = 0, Y = 0 };
-            var areaOfPlanets = geometricCalculator.PoligonArea(p1, p2, p3);
-            var areaOfPlanetsWithOrigin = geometricCalculator.PoligonArea(p1, p2, p3, origin);
-
-            return areaOfPlanets > areaOfPlanetsWithOrigin;
+            return triangleArea > areaWithOrigin;
         }
 
-        private bool ThereIsDrought(Point p1, Point p2)
+        private bool ThereIsDrought(double areaWithOrigin)
         {
-            var m = (p2.Y - p1.Y) / (p2.X - p1.X);
-            var independentConstant = p1.Y - m * p1.X;
-            // dejo un error al ser double, se acerca a cero
-            return Math.Abs(independentConstant) < 1;
+            return areaWithOrigin < 10000;
         }
 
-        private bool ArePlanetsAligned(Point p1, Point p2, Point p3)
+        private bool ArePlanetsAligned(double triangleArea)
         {
-            return (p3.Y - p2.Y) * (p2.X - p1.X) == (p2.Y - p1.Y) * (p3.X - p2.X);  
+            return triangleArea < 10000;  
         }
     }   
 }

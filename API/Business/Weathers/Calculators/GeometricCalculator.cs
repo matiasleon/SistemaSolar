@@ -19,15 +19,15 @@ namespace API.Business.Weathers.Calculators
                 area += (pts[i + 1].X - pts[i].X) * (pts[i + 1].Y + pts[i].Y) / 2;
             }
 
-            return Math.Abs(area).Round(0);
+            return Convert.ToInt32(Math.Abs(area));
         }
 
         public Point CalculteCoordinates(int distance, int angularVelocity, int t)
         {
             var point = new Point
             {
-                X = (0 + distance * Math.Cos(angularVelocity * t)).Round(10),
-                Y = (0 + distance * Math.Sin(angularVelocity * t)).Round(10)
+                X = Convert.ToInt32(0 + distance * Math.Cos(angularVelocity * t)),
+                Y = Convert.ToInt32(0 + distance * Math.Sin(angularVelocity * t))
             };
 
             return point;
