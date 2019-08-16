@@ -6,16 +6,13 @@ namespace API.Planets
 {
     public class Planet
     {
+        public int Id { get; set; }
+
         public int AngularVelocity { get; set; }
 
         public int DistanceToSun { get; set; }
 
         public string Name { get; set; }
-
-        /// <summary>
-        /// Unidad de medida es el dia
-        /// </summary>
-        public double Period => Convert.ToInt32(Math.PI/AngularVelocity);
 
         public Planet(string name, int distanceToSun, int angularVelocity)
         {

@@ -3,6 +3,7 @@ using API.Business.Weathers;
 using API.Business.Weathers.Calculators;
 using API.Business.Weathers.Results;
 using API.Business.Weathers.Validators;
+using API.Commons;
 using API.Planets;
 
 namespace API.Weathers
@@ -14,7 +15,6 @@ namespace API.Weathers
         private readonly WeatherValidator weatherValidator;
 
         private Dictionary<WeatherType, int> OccurrencesByWeather = new Dictionary<WeatherType, int>();
-
 
         public WeatherMachine(GeometricCalculator geometricCalculator,
                               WeatherValidator weatherValidator)
@@ -38,13 +38,13 @@ namespace API.Weathers
 
             for (int day = 1; day <= 3600; day++)
             {
-                var weather = Predict(day);
+                var betasoidePosition = geometricCalculator.CalculteCoordinates(betasoide.DistanceToSun, betasoide.AngularVelocity, day);
+                var ferengiePosition = geometricCalculator.CalculteCoordinates(ferengie.DistanceToSun, ferengie.AngularVelocity, day);
+                var vulcanoPosition = geometricCalculator.CalculteCoordinates(vulcano.DistanceToSun, vulcano.AngularVelocity, day);
+                var weather = Predict(betasoidePosition, ferengiePosition, vulcanoPosition);
                 SetOcurrence(weather.Type);
                 if (weather.Type == WeatherType.Rainy)
                 {
-                    var betasoidePosition = geometricCalculator.CalculteCoordinates(betasoide.DistanceToSun, betasoide.AngularVelocity, day);
-                    var ferengiePosition = geometricCalculator.CalculteCoordinates(ferengie.DistanceToSun, ferengie.AngularVelocity, day);
-                    var vulcanoPosition = geometricCalculator.CalculteCoordinates(vulcano.DistanceToSun, vulcano.AngularVelocity, day);
                     var perimeterTriangule = geometricCalculator.CalculatePerimeterOfTriangule(betasoidePosition, ferengiePosition, vulcanoPosition);
                     if (perimeterTriangule > maxPerimeter)
                     {
@@ -63,16 +63,16 @@ namespace API.Weathers
             var ferengie = new Planet("ferengie", 500, -1);
             var vulcano = new Planet("vulcano", 1000, 5);
 
-            return Predict(day, betasoide, ferengie, vulcano);
-        }
-
-        private Weather Predict(int day, Planet betasoide, Planet ferengie, Planet vulcano)
-        {
             var betasoidePosition = geometricCalculator.CalculteCoordinates(betasoide.DistanceToSun, betasoide.AngularVelocity, day);
             var ferengiePosition = geometricCalculator.CalculteCoordinates(ferengie.DistanceToSun, ferengie.AngularVelocity, day);
             var vulcanoPosition = geometricCalculator.CalculteCoordinates(vulcano.DistanceToSun, vulcano.AngularVelocity, day);
-            var weather = weatherValidator.DeterminateWheater(betasoidePosition, ferengiePosition, vulcanoPosition);
 
+            return Predict(betasoidePosition, ferengiePosition, vulcanoPosition);
+        }
+
+        private Weather Predict(Point betasoide, Point ferengie, Point vulcano)
+        {
+            var weather = weatherValidator.DeterminateWheater(betasoide, ferengie, vulcano);
             return weather;
         }
 
@@ -83,11 +83,11 @@ namespace API.Weathers
 
         private Prediction CreatePredictionResult(int maxRainyDay)
         {
-            var predcition = new Prediction(this.OccurrencesByWeather[WeatherType.Drought],
+            var prediction = new Prediction(this.OccurrencesByWeather[WeatherType.Drought],
                                             this.OccurrencesByWeather[WeatherType.Rainy],
                                             this.OccurrencesByWeather[WeatherType.IdealConditions],
                                             maxRainyDay);
-            return predcition;
+            return prediction;
         }
     }
 }

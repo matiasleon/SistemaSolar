@@ -1,4 +1,5 @@
 ﻿using System;
+using API.Business.Commons;
 using API.Business.Weathers.Calculators;
 using API.Commons;
 
@@ -8,24 +9,21 @@ namespace API.Business.Weathers.Validators
     {
         private readonly GeometricCalculator geometricCalculator;
 
-        private const double EPSILON = 1;
-
         public WeatherValidator(GeometricCalculator geometricCalculator)
         {
             this.geometricCalculator = geometricCalculator;
         }
 
-        //todo: implementar un chaain of responsability in order to hava a cleaner code
         public Weather DeterminateWheater(Point p1, Point p2, Point p3)
         {
             if (ArePlanetsAligned(p1, p2, p3))
             {
                 if (ThereIsDrought(p1, p2))
                 {
-                    // Sequia
+
                     return new Weather("Sequia", WeatherType.Drought);
                 }
-                // Condiciones optimas de presion y temperatura
+
                 return new Weather("condiciones ideales", WeatherType.IdealConditions);
             }
 
@@ -50,15 +48,13 @@ namespace API.Business.Weathers.Validators
         {
             var m = (p2.Y - p1.Y) / (p2.X - p1.X);
             var independentConstant = p1.Y - m * p1.X;
-            return Math.Abs(independentConstant) < EPSILON;
+            // dejo un error al ser double, se acerca a cero
+            return Math.Abs(independentConstant) < 1;
         }
 
         private bool ArePlanetsAligned(Point p1, Point p2, Point p3)
         {
-            var m1 = (p3.Y - p1.Y) * (p2.X - p1.X);
-            var m2 = (p2.Y - p1.Y) * (p3.X - p1.X);
-
-            return Math.Abs(m1 - m2) < EPSILON;
+            return (p3.Y - p2.Y) * (p2.X - p1.X) == (p2.Y - p1.Y) * (p3.X - p2.X);  
         }
-    }
+    }   
 }

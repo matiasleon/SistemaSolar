@@ -9,7 +9,7 @@ namespace API.Business.Commons
     {
         public static double Round(this double number, int digits = 2)
         {
-            return Math.Round(number, digits, MidpointRounding.ToEven);
+            return Math.Round(number, digits, MidpointRounding.AwayFromZero);
         }
     }
 }
